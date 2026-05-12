@@ -1,0 +1,140 @@
+.mood-date {
+  font-size: 13px;
+  color: var(--teal);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.mood-heading { margin-bottom: 8px; }
+
+/* ─── Streak ──────────────────────────────────────── */
+.streak-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(249,115,22,0.1));
+  border: 1px solid rgba(251,191,36,0.3);
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  margin-bottom: 4px;
+}
+.streak-fire { font-size: 32px; }
+.streak-count {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+  margin: 0;
+}
+.streak-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  margin: 2px 0 0;
+}
+
+/* ─── Picker ──────────────────────────────────────── */
+.mood-picker {
+  display: flex;
+  gap: 12px;
+  margin: 32px 0;
+  flex-wrap: wrap;
+}
+
+.mood-btn {
+  flex: 1;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-spring);
+  color: var(--text-2);
+}
+
+.mood-btn:hover {
+  border-color: var(--mood-color);
+  background: color-mix(in srgb, var(--mood-color) 8%, var(--surface));
+  transform: translateY(-3px);
+}
+
+.mood-btn.active {
+  border-color: var(--mood-color);
+  background: color-mix(in srgb, var(--mood-color) 14%, var(--surface));
+  box-shadow: 0 0 20px color-mix(in srgb, var(--mood-color) 25%, transparent);
+  color: var(--text-1);
+}
+
+.mood-emoji { font-size: 32px; }
+.mood-label { font-size: 12px; font-weight: 500; letter-spacing: 0.02em; }
+
+/* ─── Chart ───────────────────────────────────────── */
+.mood-chart { margin-bottom: 28px; }
+.chart-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--text-1);
+  margin-bottom: 20px;
+}
+
+.chart-bars { display: flex; flex-direction: column; gap: 12px; }
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  align-items: center;
+  gap: 12px;
+}
+
+.bar-emoji { font-size: 18px; text-align: center; }
+
+.bar-track {
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.6s var(--ease-smooth);
+  min-width: 4px;
+}
+
+.bar-count {
+  font-size: 13px;
+  color: var(--text-3);
+  text-align: right;
+}
+
+/* ─── History ─────────────────────────────────────── */
+.history-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--text-1);
+  margin-bottom: 14px;
+}
+
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--c, var(--teal));
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+
+.history-emoji { font-size: 18px; }
+.history-label { color: var(--text-1); font-weight: 500; }
+.history-date  { margin-left: auto; color: var(--text-3); font-size: 12px; }

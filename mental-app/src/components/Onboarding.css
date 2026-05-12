@@ -1,0 +1,75 @@
+.onboard-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.onboard-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl, 20px);
+  padding: 40px 36px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.onboard-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.onboard-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.onboard-dot.active { width: 24px; border-radius: 4px; background: var(--teal); }
+.onboard-dot.done   { background: var(--teal); opacity: 0.4; }
+
+.onboard-icon { font-size: 56px; margin-bottom: 16px; }
+
+.onboard-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--text-1);
+  margin: 0 0 12px;
+}
+
+.onboard-desc {
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0 0 28px;
+}
+
+.onboard-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.onboard-skip {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px;
+}
+.onboard-skip:hover { color: var(--text-2); }

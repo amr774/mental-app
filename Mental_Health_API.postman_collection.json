@@ -1,0 +1,756 @@
+{
+  "info": {
+    "name": "Mental Health API",
+    "_postman_id": "mental-health-grad-2026",
+    "description": "Complete API collection for the Mental Health graduation project.\n\n**Base URL:** `http://localhost:3000`\n\n**Auth:** Most protected routes use Bearer JWT. After login, copy the `token` from the response and set the `token` collection variable.\n\n**Roles:**\n- `user` — standard authenticated user\n- `admin` — admin-only endpoints (use `adminToken` variable)\n\n**Variables to set before testing:**\n- `baseUrl` → `http://localhost:3000`\n- `token` → JWT from `/login`\n- `adminToken` → JWT from admin `/login`\n- `petId` → ObjectId of a pet\n- `articleId` → ObjectId of an article\n- `userId` → ObjectId of a user (admin operations)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",     "value": "http://localhost:3000", "type": "string" },
+    { "key": "token",       "value": "",                      "type": "string", "description": "JWT for regular user — paste from /login response" },
+    { "key": "adminToken",  "value": "",                      "type": "string", "description": "JWT for admin user — paste from /login response" },
+    { "key": "petId",       "value": "",                      "type": "string", "description": "MongoDB ObjectId of a pet" },
+    { "key": "articleId",   "value": "",                      "type": "string", "description": "MongoDB ObjectId of an article" },
+    { "key": "userId",      "value": "",                      "type": "string", "description": "MongoDB ObjectId of a user (admin ops)" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Registration, login, and password reset — no authentication required.",
+      "auth": { "type": "noauth" },
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/register", "host": ["{{baseUrl}}"], "path": ["register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmed Ali\",\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"secret123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Create a new user account.\n\n**Required body fields:**\n- `name` (string)\n- `email` (string, unique)\n- `password` (string, min 6 chars)"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"User registered successfully\",\n  \"user\": {\n    \"id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"name\": \"Ahmed Ali\",\n    \"email\": \"ahmed@example.com\",\n    \"role\": \"user\"\n  }\n}"
+            },
+            {
+              "name": "400 Email Already Registered",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Email already registered\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) {",
+                  "  pm.collectionVariables.set('token', json.token);",
+                  "  console.log('Token saved to collection variable: token');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/login", "host": ["{{baseUrl}}"], "path": ["login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"secret123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Authenticate a user and receive a JWT (valid 12 hours).\n\nThe test script automatically saves the returned `token` to the `token` collection variable."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Login successful\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"user\": {\n    \"id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"name\": \"Ahmed Ali\",\n    \"email\": \"ahmed@example.com\",\n    \"role\": \"user\"\n  }\n}"
+            },
+            {
+              "name": "400 Invalid Credentials",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Invalid email or password\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/forgot-password", "host": ["{{baseUrl}}"], "path": ["forgot-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ahmed@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Request a 6-character hex reset token. In production this would be emailed; in dev it is returned directly.\n\nToken expires in **15 minutes**."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Reset token generated.\",\n  \"resetToken\": \"A3F9C1\",\n  \"note\": \"Expires in 15 minutes\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/reset-password", "host": ["{{baseUrl}}"], "path": ["reset-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"resetToken\": \"A3F9C1\",\n  \"newPassword\": \"newSecret456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Reset a user's password using the token from `/forgot-password`.\n\n**Required body fields:**\n- `email`\n- `resetToken` (case-insensitive)\n- `newPassword` (min 6 chars)"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Password reset successfully ✅\"\n}"
+            },
+            {
+              "name": "400 Invalid Token",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Invalid reset token\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User Profile & Wishlist",
+      "description": "Profile management and pet wishlist. All endpoints require a valid Bearer token (inherit from collection).",
+      "auth": { "type": "inherit" },
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/profile", "host": ["{{baseUrl}}"], "path": ["profile"] },
+            "description": "Retrieve the authenticated user's profile."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"user\": {\n    \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"name\": \"Ahmed Ali\",\n    \"email\": \"ahmed@example.com\",\n    \"role\": \"user\",\n    \"wishlist\": [],\n    \"createdAt\": \"2026-04-21T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "401 No Token",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"No token provided\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/profile", "host": ["{{baseUrl}}"], "path": ["profile"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmed Mohamed\",\n  \"currentPassword\": \"secret123\",\n  \"newPassword\": \"newSecret456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Update the authenticated user's name and/or password.\n\n**Optional body fields:**\n- `name` — new display name\n- `currentPassword` + `newPassword` — to change password (both required together)"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Profile updated successfully\",\n  \"user\": {\n    \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"name\": \"Ahmed Mohamed\",\n    \"email\": \"ahmed@example.com\",\n    \"role\": \"user\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Wishlist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/wishlist", "host": ["{{baseUrl}}"], "path": ["wishlist"] },
+            "description": "Retrieve the authenticated user's pet wishlist (populated pet objects)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"wishlist\": [\n    {\n      \"_id\": \"665a1b2c3d4e5f6a7b8c9d0e\",\n      \"name\": \"Buddy\",\n      \"type\": \"Dog\",\n      \"personality\": \"Calm\",\n      \"description\": \"A gentle golden retriever.\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add Pet to Wishlist",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/{{petId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "{{petId}}"]
+            },
+            "description": "Add a pet to the authenticated user's wishlist.\n\n**Path param:** `petId` — MongoDB ObjectId of the pet"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Pet added to wishlist ✅\",\n  \"wishlist\": [\"665a1b2c3d4e5f6a7b8c9d0e\"]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Remove Pet from Wishlist",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wishlist/{{petId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["wishlist", "{{petId}}"]
+            },
+            "description": "Remove a pet from the authenticated user's wishlist.\n\n**Path param:** `petId` — MongoDB ObjectId of the pet"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Pet removed from wishlist ✅\",\n  \"wishlist\": []\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pets",
+      "description": "Pet catalog. `GET /pets` is public. `POST` and `DELETE` require admin Bearer token.",
+      "item": [
+        {
+          "name": "Get All Pets",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pets?type=Dog&personality=Calm",
+              "host": ["{{baseUrl}}"],
+              "path": ["pets"],
+              "query": [
+                { "key": "type",        "value": "Dog",  "description": "Filter by pet type (e.g. Dog, Cat, Bird)" },
+                { "key": "personality", "value": "Calm", "description": "Filter by personality label" }
+              ]
+            },
+            "description": "List all pets. Both query parameters are **optional**.\n\n**Query params:**\n- `type` — e.g. `Dog`, `Cat`, `Bird`\n- `personality` — e.g. `Calm`, `Social`, `Anxious`"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"_id\": \"665a1b2c3d4e5f6a7b8c9d0e\",\n    \"name\": \"Buddy\",\n    \"type\": \"Dog\",\n    \"personality\": \"Calm\",\n    \"description\": \"A gentle golden retriever.\",\n    \"createdAt\": \"2026-04-20T08:00:00.000Z\"\n  },\n  {\n    \"_id\": \"665a1b2c3d4e5f6a7b8c9d1f\",\n    \"name\": \"Whiskers\",\n    \"type\": \"Cat\",\n    \"personality\": \"Social\",\n    \"description\": \"A playful tabby cat.\",\n    \"createdAt\": \"2026-04-20T09:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create Pet  [Admin]",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/pets", "host": ["{{baseUrl}}"], "path": ["pets"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Buddy\",\n  \"type\": \"Dog\",\n  \"personality\": \"Calm\",\n  \"description\": \"A gentle golden retriever good for anxious owners.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "**Admin only.** Create a new pet in the catalog.\n\n**Required body fields:**\n- `name` (string)\n\n**Optional:**\n- `type` — e.g. Dog, Cat, Bird\n- `personality` — e.g. Calm, Social, Anxious\n- `description`"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"_id\": \"665a1b2c3d4e5f6a7b8c9d0e\",\n  \"name\": \"Buddy\",\n  \"type\": \"Dog\",\n  \"personality\": \"Calm\",\n  \"description\": \"A gentle golden retriever good for anxious owners.\",\n  \"createdAt\": \"2026-04-21T10:00:00.000Z\",\n  \"updatedAt\": \"2026-04-21T10:00:00.000Z\"\n}"
+            },
+            {
+              "name": "403 Forbidden (not admin)",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Access denied. Admins only.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Pet  [Admin]",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pets/{{petId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["pets", "{{petId}}"]
+            },
+            "description": "**Admin only.** Permanently delete a pet by its MongoDB ObjectId.\n\n**Path param:** `petId`"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Pet deleted successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Articles",
+      "description": "Mental health articles. `GET /articles` is public. Create / Update / Delete require admin.",
+      "item": [
+        {
+          "name": "Get All Articles",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles?search=anxiety&category=Wellness",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles"],
+              "query": [
+                { "key": "search",   "value": "anxiety", "description": "Full-text search in title/content" },
+                { "key": "category", "value": "Wellness", "description": "Filter by article category" }
+              ]
+            },
+            "description": "List all articles. Both query parameters are **optional**.\n\n**Query params:**\n- `search` — keyword search\n- `category` — e.g. `Wellness`, `Therapy`, `Meditation`"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"_id\": \"664c0a1b2c3d4e5f6a7b8c9d\",\n    \"title\": \"Managing Anxiety at Work\",\n    \"content\": \"Anxiety in the workplace is common...\",\n    \"category\": \"Wellness\",\n    \"createdAt\": \"2026-04-19T12:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create Article  [Admin]",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/articles", "host": ["{{baseUrl}}"], "path": ["articles"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Managing Anxiety at Work\",\n  \"content\": \"Anxiety in the workplace is common. Here are proven strategies to cope...\",\n  \"category\": \"Wellness\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "**Admin only.** Create a new article.\n\n**Required body fields:**\n- `title` (string)\n- `content` (string)\n- `category` (string)"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"_id\": \"664c0a1b2c3d4e5f6a7b8c9d\",\n  \"title\": \"Managing Anxiety at Work\",\n  \"content\": \"Anxiety in the workplace is common. Here are proven strategies to cope...\",\n  \"category\": \"Wellness\",\n  \"createdAt\": \"2026-04-21T10:00:00.000Z\",\n  \"updatedAt\": \"2026-04-21T10:00:00.000Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Article  [Admin]",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{articleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "{{articleId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Managing Anxiety at Work — Updated\",\n  \"content\": \"Updated content with new research...\",\n  \"category\": \"Therapy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "**Admin only.** Update an existing article by ID.\n\n**Path param:** `articleId`\n\n**Body:** any subset of `title`, `content`, `category`"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"_id\": \"664c0a1b2c3d4e5f6a7b8c9d\",\n  \"title\": \"Managing Anxiety at Work — Updated\",\n  \"content\": \"Updated content with new research...\",\n  \"category\": \"Therapy\",\n  \"updatedAt\": \"2026-04-21T11:00:00.000Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Article  [Admin]",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{articleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "{{articleId}}"]
+            },
+            "description": "**Admin only.** Delete an article by ID.\n\n**Path param:** `articleId`"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Article deleted successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Personality Test",
+      "description": "Submit answers and view results. Requires user Bearer token (inherited from collection).",
+      "auth": { "type": "inherit" },
+      "item": [
+        {
+          "name": "Take Personality Test",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/personality-test", "host": ["{{baseUrl}}"], "path": ["personality-test"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [2, 3, 1, 4, 2]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Submit an array of numeric answers to the personality quiz.\n\n**Scoring logic:**\n- Sum of answers `< 10` → `\"Calm\"`\n- Sum `10–19` → `\"Social\"`\n- Sum `≥ 20` → `\"Anxious\"`\n\n**Required body:**\n- `answers` — non-empty array of numbers\n\n**Example sums:**\n- `[2,3,1,4,2]` → sum 12 → `Social`\n- `[1,1,1,1,1]` → sum 5 → `Calm`\n- `[5,5,5,5,5]` → sum 25 → `Anxious`"
+          },
+          "response": [
+            {
+              "name": "200 OK — Social",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Test completed\",\n  \"result\": \"Social\",\n  \"testId\": \"664e9f1a2b3c4d5e6f7a8b9c\"\n}"
+            },
+            {
+              "name": "200 OK — Calm",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Test completed\",\n  \"result\": \"Calm\",\n  \"testId\": \"664e9f1a2b3c4d5e6f7a8b9d\"\n}"
+            },
+            {
+              "name": "400 Missing Answers",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Answers array is required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Personality Tests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/personality-test/my", "host": ["{{baseUrl}}"], "path": ["personality-test", "my"] },
+            "description": "Retrieve all personality test results for the authenticated user, newest first."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"_id\": \"664e9f1a2b3c4d5e6f7a8b9c\",\n    \"userId\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"answers\": [2, 3, 1, 4, 2],\n    \"result\": \"Social\",\n    \"createdAt\": \"2026-04-21T10:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chatbot",
+      "description": "AI chatbot — no authentication required.",
+      "auth": { "type": "noauth" },
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/chat", "host": ["{{baseUrl}}"], "path": ["chat"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"I'm feeling anxious about my exams. What can I do?\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Send a message to the AI mental-health chatbot and receive a supportive response.\n\n**Required body:**\n- `message` (string)"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"reply\": \"It's completely normal to feel anxious before exams. Try deep breathing: inhale for 4 seconds, hold for 4, exhale for 4. Taking short breaks and staying hydrated also helps. You've got this! 💙\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mood Tracker",
+      "description": "Log and retrieve daily moods. Requires user Bearer token (inherited from collection).",
+      "auth": { "type": "inherit" },
+      "item": [
+        {
+          "name": "Log Today's Mood",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/moods", "host": ["{{baseUrl}}"], "path": ["moods"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mood\": \"Happy\",\n  \"note\": \"Had a great day, finished my project!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Log (or update) the authenticated user's mood for today.\n\nIf a mood entry already exists for today it is **updated**; otherwise a new one is **created**.\n\n**Required body:**\n- `mood` (string) — e.g. `Happy`, `Sad`, `Anxious`, `Calm`, `Angry`\n\n**Optional body:**\n- `note` (string) — free-text note"
+          },
+          "response": [
+            {
+              "name": "201 Created (new entry)",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 1,\n  \"userId\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n  \"mood\": \"Happy\",\n  \"note\": \"Had a great day, finished my project!\",\n  \"created_at\": \"2026-04-21T14:30:00.000Z\"\n}"
+            },
+            {
+              "name": "201 Updated (same day)",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 1,\n  \"userId\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n  \"mood\": \"Calm\",\n  \"note\": \"Feeling better now.\",\n  \"created_at\": \"2026-04-21T18:00:00.000Z\"\n}"
+            },
+            {
+              "name": "400 Missing mood",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"mood is required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Mood History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/moods/history", "host": ["{{baseUrl}}"], "path": ["moods", "history"] },
+            "description": "Retrieve all mood entries for the authenticated user, ordered newest first."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"id\": 3,\n    \"userId\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"mood\": \"Happy\",\n    \"note\": \"Had a great day!\",\n    \"created_at\": \"2026-04-21T14:30:00.000Z\"\n  },\n  {\n    \"id\": 2,\n    \"userId\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"mood\": \"Anxious\",\n    \"note\": \"Exam stress.\",\n    \"created_at\": \"2026-04-20T09:00:00.000Z\"\n  },\n  {\n    \"id\": 1,\n    \"userId\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n    \"mood\": \"Calm\",\n    \"note\": \"\",\n    \"created_at\": \"2026-04-19T20:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "description": "Admin-only dashboard endpoints. Use `adminToken` — the JWT must belong to a user with `role: \"admin\"`.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/admin/stats", "host": ["{{baseUrl}}"], "path": ["admin", "stats"] },
+            "description": "Retrieve platform-wide statistics (total users, pets, articles, personality results)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"stats\": {\n    \"totalUsers\": 42,\n    \"totalPets\": 15,\n    \"totalArticles\": 8,\n    \"totalPersonalityTests\": 37\n  }\n}"
+            },
+            {
+              "name": "403 Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Access denied. Admins only.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/admin/users", "host": ["{{baseUrl}}"], "path": ["admin", "users"] },
+            "description": "Retrieve a list of all registered users."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"total\": 2,\n  \"users\": [\n    {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"name\": \"Ahmed Ali\",\n      \"email\": \"ahmed@example.com\",\n      \"role\": \"user\",\n      \"createdAt\": \"2026-04-20T08:00:00.000Z\"\n    },\n    {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c1e\",\n      \"name\": \"Admin User\",\n      \"email\": \"admin@example.com\",\n      \"role\": \"admin\",\n      \"createdAt\": \"2026-01-01T00:00:00.000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}"]
+            },
+            "description": "**Admin only.** Permanently delete a user by their MongoDB ObjectId.\n\n**Path param:** `userId`"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"User deleted successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Personality Results",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/admin/personality-results", "host": ["{{baseUrl}}"], "path": ["admin", "personality-results"] },
+            "description": "Retrieve all personality test results across all users (for admin analysis)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"_id\": \"664e9f1a2b3c4d5e6f7a8b9c\",\n    \"userId\": { \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\", \"name\": \"Ahmed Ali\", \"email\": \"ahmed@example.com\" },\n    \"answers\": [2, 3, 1, 4, 2],\n    \"result\": \"Social\",\n    \"createdAt\": \"2026-04-21T10:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "description": "Server liveness check — no auth required.",
+      "auth": { "type": "noauth" },
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] },
+            "description": "Verify the server is running."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Mental Health API running ✅\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+.mood-calendar {
+  overflow: hidden;
+}
+
+.cal-scroll {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+/* Month row */
+.cal-months {
+  display: grid;
+  align-items: end;
+  padding-bottom: 4px;
+}
+
+.cal-month-label {
+  font-size: 10px;
+  color: var(--text-3);
+  white-space: nowrap;
+  text-overflow: clip;
+  overflow: hidden;
+}
+
+/* Body = day labels + grid side by side */
+.cal-body {
+  display: flex;
+  gap: 4px;
+}
+
+.cal-day-labels {
+  display: grid;
+  grid-template-rows: repeat(7, 14px);
+  gap: 2px;
+  padding-top: 1px;
+}
+
+.cal-day-label {
+  font-size: 9px;
+  color: var(--text-3);
+  height: 14px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  width: 24px;
+}
+
+/* Main grid */
+.cal-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 14px);
+  gap: 2px;
+  grid-auto-flow: column;
+}
+
+.cal-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  cursor: default;
+  transition: transform 0.1s, opacity 0.1s;
+}
+
+.cal-cell:hover {
+  transform: scale(1.4);
+  z-index: 2;
+  position: relative;
+}
+
+.cal-future {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Legend */
+.cal-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.cal-legend-label {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+}

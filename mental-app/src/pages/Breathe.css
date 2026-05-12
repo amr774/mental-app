@@ -1,0 +1,113 @@
+.breathe-page { max-width: 680px; margin: 0 auto; }
+
+.breathe-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+/* ─── Stage ───────────────────────────────────────── */
+.breathe-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 0 16px;
+  gap: 16px;
+}
+
+.breathe-circle {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.breathe-inner {
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bc) 12%, var(--surface));
+  border: 2px solid color-mix(in srgb, var(--bc) 30%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--dur, 4s) ease-in-out;
+}
+
+.breathe-circle.expand .breathe-inner {
+  inset: 4px;
+  background: color-mix(in srgb, var(--bc) 22%, var(--surface));
+  box-shadow: 0 0 40px color-mix(in srgb, var(--bc) 30%, transparent);
+}
+
+.breathe-circle.contract .breathe-inner {
+  inset: 32px;
+  background: color-mix(in srgb, var(--bc) 6%, var(--surface));
+}
+
+.breathe-circle.hold .breathe-inner {
+  box-shadow: 0 0 30px color-mix(in srgb, var(--bc) 20%, transparent);
+}
+
+.breathe-progress {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.breathe-phase {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.breathe-seconds {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--bc, var(--teal));
+  margin: 0;
+  font-family: var(--font-display);
+}
+
+.breathe-ready {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0;
+  text-align: center;
+}
+
+.breathe-cycles {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0;
+}
+
+/* ─── Controls ─────────────────────────────────────── */
+.breathe-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+/* ─── Tips ─────────────────────────────────────────── */
+.breathe-tips { margin-top: 8px; }
+
+.tips-list {
+  margin: 12px 0 0;
+  padding-inline-start: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.6;
+}

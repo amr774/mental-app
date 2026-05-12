@@ -1,0 +1,30 @@
+.pet-heading { margin: 8px 0; }
+
+/* Large emoji placeholder when no image */
+.pet-emoji-placeholder {
+  font-size: 56px;
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  margin: -20px -20px 0;
+  width: calc(100% + 40px);
+}
+
+/* Filter layout reuse */
+.store-filters { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+
+.pets-empty {
+  text-align: center;
+  color: var(--text-3);
+  padding: 60px 0;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.pets-empty p:first-child { font-size: 40px; }
