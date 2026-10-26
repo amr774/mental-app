@@ -14,6 +14,13 @@ class PostRepository extends BaseRepository {
             .populate('comments.userId', 'name avatar');
     }
 
+    async getById(id) {
+        return this.model
+            .findById(id)
+            .populate('userId', 'name avatar')
+            .populate('comments.userId', 'name avatar');
+    }
+
     async getByUser(userId) {
         return this.model
             .find({ userId })

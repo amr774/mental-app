@@ -16,5 +16,7 @@ router.use(require("./postRoutes"));
 router.use(require("./goalRoutes"));
 router.use(require("./dashboardRoutes"));
 router.use(require("./orderRoutes"));
+router.use(require("./emotionRoutes"));
+router.use(require("./withuBotRoutes"));
 
 module.exports = router;

@@ -4,6 +4,7 @@ import { AuthProvider, useAuth }  from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { LangProvider }  from './context/LanguageContext';
 import { CartProvider }  from './context/CartContext';
+import { SavedProvider } from './context/SavedContext';
 import Navbar         from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Onboarding     from './components/Onboarding';
@@ -27,6 +28,9 @@ import Community       from './pages/Community';
 import Goals           from './pages/Goals';
 import Checkout        from './pages/Checkout';
 import MyOrders        from './pages/MyOrders';
+import EmotionScan     from './pages/EmotionScan';
+import WithUBot        from './pages/WithUBot';
+import ChatSelect      from './pages/ChatSelect';
 
 // ── Error Boundary ────────────────────────────────────────────────
 class ErrorBoundary extends Component {
@@ -104,7 +108,7 @@ function AppRoutes() {
         <Route path="/articles"        element={<Articles />} />
 
         {/* Protected — any logged-in user */}
-        <Route path="/chat"    element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
+        <Route path="/chat"    element={<ProtectedRoute><ChatSelect /></ProtectedRoute>} />
         <Route path="/chatbot" element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
         <Route path="/mood"    element={<ProtectedRoute><MoodTracker /></ProtectedRoute>} />
         <Route path="/test"    element={<ProtectedRoute><PersonalityTest /></ProtectedRoute>} />
@@ -118,6 +122,8 @@ function AppRoutes() {
         <Route path="/goals"     element={<ProtectedRoute><Goals /></ProtectedRoute>} />
         <Route path="/checkout"  element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path="/orders"    element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
+        <Route path="/scan"      element={<ProtectedRoute><EmotionScan /></ProtectedRoute>} />
+        <Route path="/withubot" element={<ProtectedRoute><WithUBot /></ProtectedRoute>} />
 
         {/* Protected — admin only */}
         <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
@@ -133,9 +139,11 @@ export default function App() {
       <LangProvider>
       <AuthProvider>
       <CartProvider>
+      <SavedProvider>
         <BrowserRouter>
           <AppRoutes />
         </BrowserRouter>
+      </SavedProvider>
       </CartProvider>
       </AuthProvider>
       </LangProvider>

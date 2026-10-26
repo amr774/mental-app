@@ -6,6 +6,12 @@ class PostService {
         return postRepository.getAll();
     }
 
+    async getOne(postId) {
+        const post = await postRepository.getById(postId);
+        if (!post) throw { status: 404, message: 'Post not found' };
+        return post;
+    }
+
     async create(userId, content, anonymous, mood) {
         if (!content || !content.trim())
             throw { status: 400, message: 'Post content is required' };

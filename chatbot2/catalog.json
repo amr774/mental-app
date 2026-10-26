@@ -1,0 +1,212 @@
+[
+  {
+    "id": 1,
+    "type": "article",
+    "name": "Complicated grief",
+    "description": "Information about intense, long-lasting grief after losing a loved one or a pet and how to heal."
+  },
+  {
+    "id": 2,
+    "type": "article",
+    "name": "Depression (major depressive disorder)",
+    "description": "Understanding symptoms of deep sadness, loss of interest, and persistent low energy."
+  },
+  {
+    "id": 3,
+    "type": "article",
+    "name": "Generalized Anxiety Disorder",
+    "description": "Help for constant worry, restlessness, and feeling on edge about daily life."
+  },
+  {
+    "id": 4,
+    "type": "article",
+    "name": "Insomnia",
+    "description": "Tips for people struggling to fall asleep, staying asleep, or having poor sleep quality."
+  },
+  {
+    "id": 5,
+    "type": "article",
+    "name": "Panic attacks and panic disorder",
+    "description": "How to manage sudden episodes of intense fear, heart palpitations, and shortness of breath."
+  },
+  {
+    "id": 6,
+    "type": "article",
+    "name": "Social anxiety disorder (social phobia)",
+    "description": "Support for fear of social situations, judgment by others, and building social confidence."
+  },
+  {
+    "id": 7,
+    "type": "article",
+    "name": "Bipolar disorder",
+    "description": "Understanding extreme mood swings, including emotional highs (mania) and lows (depression)."
+  },
+  {
+    "id": 8,
+    "type": "article",
+    "name": "Agoraphobia",
+    "description": "Understanding the fear of being in situations where escape might be difficult or help wouldn't be available."  
+  },
+  {
+    "id": 9,
+    "type": "article",
+    "name": "Post traumatic stress disorder (PTSD)",
+    "description": "Support for people struggling with memories and anxiety after a terrifying event."
+  },
+  {
+    "id": 10,
+    "type": "article",
+    "name": "Postpartum Depression",
+    "description": "Guidance for mothers experiencing deep sadness and exhaustion after childbirth."
+  },
+  {
+    "id": 11,
+    "type": "article",
+    "name": "Schizoaffective disorder",
+    "description": "Explaining symptoms that include both schizophrenia and mood disorder symptoms."
+  },
+  {
+    "id": 12,
+    "type": "article",
+    "name": "Generalized Anxiety Disorder",
+    "description": "Help for constant worry, restlessness, and feeling on edge about daily life."
+  },
+  {
+    "id": 13,
+    "type": "article",
+    "name": "Sleep disorders",
+    "description": "Tips for people struggling to fall asleep, staying asleep, or having poor sleep quality."
+  },
+  {
+    "id": 14,
+    "type": "article",
+    "name": "Panic attacks and panic disorder",
+    "description": "How to manage sudden episodes of intense fear, heart palpitations, and shortness of breath."
+  },
+  {
+    "id": 15,
+    "type": "article",
+    "name": "Anxiety",
+    "description": "General information about excessive worry, nervousness, and physical symptoms of stress and fear."
+  },
+  {
+    "id": 16,
+    "type": "article",
+    "name": "Body dysmorphic disorder",
+    "description": "A mental health condition where you can't stop thinking about perceived defects or flaws in your appearance."
+  },
+  {
+    "id": 17,
+    "type": "article",
+    "name": "Cyclothymia (cyclothymic disorder)",
+    "description": "A rare mood disorder which causes emotional ups and downs, but they're not as extreme as those in bipolar disorder."
+  },
+  {
+    "id": 18,
+    "type": "article",
+    "name": "Illness anxiety disorder",
+    "description": "Formerly called hypochondriasis, it involves worrying excessively that you are or may become seriously ill."
+  },
+  {
+    "id": 19,
+    "type": "article",
+    "name": "Adult attention-deficit-hyperactivity disorder (ADHD)",
+    "description": "Guidance on managing symptoms like impulsivity, difficulty focusing, and restlessness in adults."
+  },
+  {
+    "id": 20,
+    "type": "article",
+    "name": "Anorexia nervosa",
+    "description": "Understanding an eating disorder characterized by an intense fear of gaining weight and a distorted body image."
+  },
+  {
+    "id": 21,
+    "type": "article",
+    "name": "Antisocial personality disorder",
+    "description": "Explaining a mental condition in which a person consistently shows no regard for right and wrong and ignores the rights and feelings of others."
+  },
+  {
+    "id": 22,
+    "type": "article",
+    "name": "Attention-deficit-hyperactivity disorder (ADHD) in children",
+    "description": "Support for parents of children struggling with hyperactivity, inability to stay focused, and impulsive behaviors."
+  },
+  {
+    "id": 23,
+    "type": "article",
+    "name": "Binge-eating disorder",
+    "description": "Support for those frequently consuming unusually large amounts of food and feeling unable to stop eating."
+  },
+  {
+    "id": 24,
+    "type": "article",
+    "name": "Borderline personality disorder",
+    "description": "Understanding a condition that impacts how you think and feel about yourself and others, causing intense, unstable relationships."
+  },
+  {
+    "id": 25,
+    "type": "article",
+    "name": "Bulimia nervosa",
+    "description": "Explaining an eating disorder marked by binging, followed by methods to avoid weight gain, such as purging."
+  },
+  {
+    "id": 26,
+    "type": "article",
+    "name": "Childhood schizophrenia",
+    "description": "Information on early-onset schizophrenia where children interpret reality abnormally, requiring specialized care."
+  },
+  {
+    "id": 27,
+    "type": "article",
+    "name": "Eating disorders",
+    "description": "A broad overview of various conditions characterized by unhealthy eating habits and obsessions with body weight or shape."
+  },
+  {
+    "id": 28,
+    "type": "article",
+    "name": "Mood disorders",
+    "description": "A general guide to conditions that primarily affect your emotional state, like persistent sadness or extreme happiness."
+  },
+  {
+    "id": 29,
+    "type": "article",
+    "name": "Obsessive-compulsive disorder (OCD)",
+    "description": "Help for those experiencing recurring, unwanted thoughts (obsessions) and repetitive behaviors (compulsions)."
+  },
+  {
+    "id": 30,
+    "type": "article",
+    "name": "Personality disorders",
+    "description": "General information on various mental disorders characterized by rigid and unhealthy patterns of thinking and behaving."
+  },
+  {
+    "id": 31,
+    "type": "article",
+    "name": "Schizoid personality disorder",
+    "description": "Understanding an uncommon condition in which people avoid social activities and consistently shy away from interaction with others."
+  },
+  {
+    "id": 32,
+    "type": "article",
+    "name": "Schizophrenia",
+    "description": "Information on a serious mental disorder in which people interpret reality abnormally, often involving hallucinations or delusions."
+  },
+  {
+    "id": 33,
+    "type": "article",
+    "name": "Schizotypal personality disorder",
+    "description": "Explaining a disorder marked by severe social anxiety, thought disorders, paranoid ideation, and unconventional beliefs."
+  },
+  {
+    "id": 34,
+    "type": "article",
+    "name": "Separation anxiety disorder",
+    "description": "Help for individuals experiencing excessive fear or anxiety concerning separation from those to whom they are attached."
+  },
+  {
+    "id": 35,
+    "type": "article",
+    "name": "Social anxiety disorder (social phobia)",
+    "description": "Formerly called hypochondriasis, it involves worrying excessively that you are or may become seriously ill."
+  }
+]

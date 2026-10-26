@@ -10,7 +10,7 @@ class OrderController {
                 return res.status(400).json({ message: 'All customer fields are required' });
             }
             const order = await orderService.create({
-                userId:        req.userId || null,
+                userId:        req.user?.id || null,
                 items,
                 customer,
                 paymentMethod: paymentMethod || 'cash',
@@ -25,7 +25,7 @@ class OrderController {
 
     async getMyOrders(req, res) {
         try {
-            const orders = await orderService.getByUser(req.userId);
+            const orders = await orderService.getByUser(req.user?.id);
             res.json(orders);
         } catch (e) {
             res.status(500).json({ message: e.message });

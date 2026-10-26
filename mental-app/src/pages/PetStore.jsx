@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { petService, wishlistService } from '../services/api';
-import { useLang } from '../context/LanguageContext';
-import { useCart } from '../context/CartContext';
+import { useLang }  from '../context/LanguageContext';
+import { useCart }  from '../context/CartContext';
+import { useSaved } from '../context/SavedContext';
 import './PetStore.css';
 
 const TYPE_EMOJI = {
@@ -9,10 +10,6 @@ const TYPE_EMOJI = {
 };
 const petEmoji = (type = '') => TYPE_EMOJI[type.toLowerCase()] || '🐾';
 
-// localStorage save ─────────────────────────────────────────────────
-const SAVED_KEY  = 'mh_pets_saved';
-const loadSaved  = () => { try { return new Set(JSON.parse(localStorage.getItem(SAVED_KEY)) || []); } catch { return new Set(); } };
-const writeSaved = (s) => { try { localStorage.setItem(SAVED_KEY, JSON.stringify([...s])); } catch {} };
 
 const PET_TYPES = ['all', 'dog', 'cat', 'bird', 'fish', 'rabbit', 'hamster'];
 const MOOD_CHIPS = ['calm', 'anxious', 'lonely', 'stress', 'playful', 'social', 'general', 'sad'];
@@ -20,12 +17,12 @@ const MOOD_CHIPS = ['calm', 'anxious', 'lonely', 'stress', 'playful', 'social', 
 export default function PetStore() {
   const { t } = useLang();
   const { addItem, items: cartItems } = useCart();
+  const { toggleSave, isSaved } = useSaved();
 
   const [pets,      setPets]      = useState([]);
   const [loading,   setLoading]   = useState(true);
   const [search,    setSearch]    = useState('');
   const [typeFilter,setTypeFilter]= useState('all');
-  const [savedIds,  setSavedIds]  = useState(loadSaved);
   const [added,     setAdded]     = useState({});
 
   useEffect(() => {
@@ -35,13 +32,8 @@ export default function PetStore() {
       .finally(() => setLoading(false));
   }, [search, typeFilter]);
 
-  const toggleSave = (id) => {
-    setSavedIds(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      writeSaved(next);
-      return next;
-    });
+  const handleToggleSave = (pet) => {
+    toggleSave({ id: pet._id || pet.id, itemType: 'pet', name: pet.name, price: pet.price || 0, image: pet.image || '' });
   };
 
   const handleAddToCart = (pet) => {
@@ -123,7 +115,7 @@ export default function PetStore() {
           {pets.map((pet, i) => {
             const id   = pet._id || pet.id;
             const sold = isSold(pet);
-            const saved = savedIds.has(id);
+            const saved = isSaved(id, 'pet');
 
             return (
               <div key={id} className={`store-card card animate-fade-up delay-${(i % 4) + 1} ${sold ? 'store-card-sold' : ''}`}>
@@ -156,7 +148,7 @@ export default function PetStore() {
                   <div className="store-card-actions">
                     <button
                       className={`btn btn-sm store-save-btn ${saved ? 'saved' : ''}`}
-                      onClick={() => toggleSave(id)}
+                      onClick={() => handleToggleSave(pet)}
                     >
                       {saved ? '🔖 ' + t('store.saved') : '🔖 ' + t('store.save')}
                     </button>

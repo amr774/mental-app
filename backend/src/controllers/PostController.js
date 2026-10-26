@@ -11,6 +11,15 @@ class PostController {
         }
     }
 
+    async getOne(req, res) {
+        try {
+            const post = await postService.getOne(req.params.id);
+            res.json(post);
+        } catch (err) {
+            res.status(err.status || 500).json({ message: err.message });
+        }
+    }
+
     async create(req, res) {
         try {
             const { content, anonymous, mood } = req.body;

@@ -1,28 +1,23 @@
 import { useState, useEffect } from 'react';
-import { useLang } from '../context/LanguageContext';
-import { useCart } from '../context/CartContext';
+import { useLang }  from '../context/LanguageContext';
+import { useCart }  from '../context/CartContext';
+import { useSaved } from '../context/SavedContext';
 import { storeService } from '../services/api';
 import './Store.css';
 
 const CATEGORIES = ['all', 'general', 'books', 'electronics', 'toys', 'other'];
 const CONDITION_COLOR = { new: '#4ade80', 'like-new': '#4ecdc4', good: '#94a3b8', fair: '#fbbf24' };
 
-// ── localStorage saved items ──────────────────────────────────────
-const SAVED_KEY  = 'mh_store_saved';
-const loadSaved  = () => { try { return new Set(JSON.parse(localStorage.getItem(SAVED_KEY)) || []); } catch { return new Set(); } };
-const writeSaved = (set) => { try { localStorage.setItem(SAVED_KEY, JSON.stringify([...set])); } catch {} };
-
 export default function Store() {
   const { t } = useLang();
   const { addItem, items: cartItems } = useCart();
+  const { toggleSave, isSaved } = useSaved();
 
   const [items,    setItems]    = useState([]);
   const [search,   setSearch]   = useState('');
   const [category, setCategory] = useState('all');
   const [loading,  setLoading]  = useState(true);
-
-  const [savedIds, setSavedIds] = useState(loadSaved);
-  const [added,    setAdded]    = useState({}); // flash state per item
+  const [added,    setAdded]    = useState({});
 
   const loadItems = async () => {
     setLoading(true);
@@ -35,12 +30,10 @@ export default function Store() {
 
   useEffect(() => { loadItems(); }, [search, category]);
 
-  const toggleSave = (id) => {
-    setSavedIds(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      writeSaved(next);
-      return next;
+  const handleToggleSave = (item) => {
+    toggleSave({
+      id: item._id, itemType: 'store',
+      name: item.title, price: item.price, image: item.image || '',
     });
   };
 
@@ -104,7 +97,7 @@ export default function Store() {
       ) : (
         <div className="store-grid animate-fade-up delay-1">
           {items.map(item => {
-            const saved = savedIds.has(item._id);
+            const saved = isSaved(item._id, 'store');
             return (
               <div key={item._id} className={`store-card card ${item.status === 'sold' ? 'store-card-sold' : ''}`}>
                 {item.status === 'sold' && <div className="store-sold-ribbon">{t('store.sold')}</div>}
@@ -141,7 +134,7 @@ export default function Store() {
                   <div className="store-card-actions">
                     <button
                       className={`btn btn-sm store-save-btn ${saved ? 'saved' : ''}`}
-                      onClick={() => toggleSave(item._id)}
+                      onClick={() => handleToggleSave(item)}
                     >
                       {saved ? '🔖 ' + t('store.saved') : '🔖 ' + t('store.save')}
                     </button>

@@ -47,14 +47,15 @@ class AuthService {
         const user = await userRepository.findByEmail(email);
         if (!user) return { message: "If this email exists, a reset token has been sent." };
 
-        const resetToken = crypto.randomBytes(3).toString("hex").toUpperCase();
+        const resetToken = crypto.randomBytes(20).toString("hex").toUpperCase();
         await userRepository.updateById(user._id, {
             resetToken,
             resetTokenExpiry: new Date(Date.now() + 15 * 60 * 1000)
         });
 
-        // In production: send via email
-        return { message: "Reset token generated.", resetToken, note: "Expires in 15 minutes" };
+        // In production: send via email. Token is NOT returned in response.
+        console.log(`[DEV] Reset token for ${email}: ${resetToken}`);
+        return { message: "If this email exists, a reset token has been sent." };
     }
 
     async resetPassword(email, token, newPassword) {

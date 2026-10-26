@@ -1,0 +1,65 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build files
+dist/
+build/
+coverage/
+.expo/
+.next/
+
+# Logs
+*.log
+
+# Local data
+*.db
+*.sqlite
+*.sqlite3
+uploads/
+backups/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+
+
+# Local backup files
+*.backup
+
+
+# Private chatbot data
+chatbot2/mood_history.json
+chatbot2/user_history_log.json
+
+# Private backend data
+backend/src/data/
+
+# Local AI training data
+best.pth/best/data/
+
+# Local backups
+*.backup
+
+
+# Local or private chatbot data
+chatbot2/pet.json
+
+# AI model data
+best.pth/best/data/
+
+# Local backups
+*.backup
+
+
+# AI model artifacts - review before publishing
+best.pth/
+
+# Generated chatbot data - review before publishing
+chatbot2/chunks.json

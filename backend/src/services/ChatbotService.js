@@ -101,7 +101,7 @@ class ChatbotService {
                 reply = completion.choices[0]?.message?.content?.trim()
                     || "I'm here for you. Can you tell me more?";
             } catch (err) {
-                console.error("Groq error:", err.message);
+                console.error("Groq error:", err.message, err.status, err.error);
                 reply = "I'm here for you. Can you tell me more about how you're feeling?";
             }
         } else {

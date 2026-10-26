@@ -5,6 +5,7 @@ const verifyToken = require("../middlewares/authMiddleware");
 
 router.get("/journal",         verifyToken, journalController.getAll.bind(journalController));
 router.post("/journal",        verifyToken, journalController.create.bind(journalController));
+router.put("/journal/:id",     verifyToken, journalController.update.bind(journalController));
 router.delete("/journal/:id",  verifyToken, journalController.delete.bind(journalController));
 
 module.exports = router;

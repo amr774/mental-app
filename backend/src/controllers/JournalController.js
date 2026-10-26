@@ -19,6 +19,15 @@ class JournalController {
         }
     }
 
+    async update(req, res) {
+        try {
+            const entry = await journalService.update(req.params.id, req.user.id, req.body);
+            res.json(entry);
+        } catch (err) {
+            res.status(err.status || 500).json({ message: err.message });
+        }
+    }
+
     async delete(req, res) {
         try {
             const result = await journalService.delete(req.params.id, req.user.id);

@@ -1,116 +1,258 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth }  from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLang }  from '../context/LanguageContext';
 import { useCart }  from '../context/CartContext';
-import { useRef } from 'react';
+import { useSaved } from '../context/SavedContext';
 import './Navbar.css';
+
+// Links always visible in the top navbar
+const MAIN_LINKS = [
+  { to: '/dashboard', labelKey: 'nav.dashboard', icon: '🏠', label: 'Home'    },
+  { to: '/chat',      labelKey: 'nav.chat',      icon: '💬', label: 'Chat'    },
+  { to: '/test',      labelKey: 'nav.test',      icon: '🧪', label: 'Test'    },
+  { to: '/store',     labelKey: 'nav.store',     icon: '🛍️', label: 'Store'   },
+  { to: '/profile',   labelKey: 'nav.profile',   icon: '👤', label: 'Profile' },
+];
+
+// Links in the sidebar
+const SIDE_LINKS = [
+  { to: '/articles',  icon: '📰', label: 'Articles'   },
+  { to: '/mood',      icon: '📊', label: 'Mood'        },
+  { to: '/journal',   icon: '📔', label: 'Journal'     },
+  { to: '/goals',     icon: '🎯', label: 'Goals'       },
+  { to: '/breathe',   icon: '🌬️', label: 'Breathe'    },
+  { to: '/community', icon: '🤝', label: 'Community'   },
+  { to: '/pets',      icon: '🐾', label: 'Pet Store'   },
+  { to: '/scan',      icon: '🧠', label: 'Emotion Scan'},
+  { to: '/withubot',  icon: '🤍', label: 'WithUBot'   },
+];
 
 export default function Navbar() {
   const { user, logout }        = useAuth();
   const { theme, toggleTheme }  = useTheme();
   const { t, toggleLang, lang } = useLang();
   const { count: cartCount }    = useCart();
+  const { addItem: addToCart }  = useCart();
+  const { items: savedItems, remove: removeSaved, count: savedCount } = useSaved();
   const { pathname }            = useLocation();
   const navigate                = useNavigate();
-  const scrollRef               = useRef(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [savedOpen,   setSavedOpen]   = useState(false);
 
-  const NAV_LINKS = [
-    { to: '/dashboard', label: t('nav.dashboard'), icon: '🏠' },
-    { to: '/articles',  label: t('nav.articles'),  icon: '📰' },
-    { to: '/chat',      label: t('nav.chat'),      icon: '💬' },
-    { to: '/test',      label: t('nav.test'),      icon: '🧪' },
-    { to: '/mood',      label: t('nav.mood'),      icon: '📊' },
-    { to: '/breathe',   label: t('nav.breathe'),   icon: '🌬️' },
-    { to: '/journal',   label: t('nav.journal'),   icon: '📔' },
-    { to: '/goals',     label: t('nav.goals'),     icon: '🎯' },
-    { to: '/community', label: t('nav.community'), icon: '💬' },
-    { to: '/pets',      label: t('nav.pets'),      icon: '🐾' },
-    { to: '/store',     label: t('nav.store'),     icon: '🛍️' },
+  const handleLogout = () => { logout(); navigate('/login'); setSidebarOpen(false); setSavedOpen(false); };
+  const openSaved   = () => { setSavedOpen(true);  setSidebarOpen(false); };
+  const openSidebar = () => { setSidebarOpen(o => !o); setSavedOpen(false); };
 
-    { to: '/profile',   label: t('nav.profile'),   icon: '👤' },
-  ];
+  // Close panels on route change
+  useEffect(() => { setSidebarOpen(false); setSavedOpen(false); }, [pathname]);
 
-  function scrollNav(direction) {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: direction * 150, behavior: 'smooth' });
-  }
+  // Lock body scroll when any panel open
+  useEffect(() => {
+    document.body.style.overflow = (sidebarOpen || savedOpen) ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [sidebarOpen, savedOpen]);
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const isActive = (to) => pathname === to || pathname.startsWith(to + '/');
 
   return (
-    <header className="navbar">
-      {/* Brand */}
-      <Link to="/" className="navbar-brand">
-        <span className="brand-icon">🧠</span>
-        <span className="brand-name">Mindful</span>
-      </Link>
+    <>
+      {/* ── Top Navbar ─────────────────────────────── */}
+      <header className="navbar">
+        {/* Brand */}
+        <Link to="/" className="navbar-brand">
+          <span className="brand-icon">🧠</span>
+          <span className="brand-name">Mindful</span>
+        </Link>
 
-      {/* Scroll wrapper — arrows always visible when logged in */}
-      <div className="navbar-scroll-wrap">
+        {/* Main nav links — desktop */}
         {user && (
-          <button className="nav-arrow" onClick={() => scrollNav(-1)} aria-label="scroll prev">
-            ‹
-          </button>
+          <nav className="navbar-main-links">
+            {MAIN_LINKS.map(({ to, icon, labelKey, label }) => (
+              <Link key={to} to={to} className={`nav-link ${isActive(to) ? 'active' : ''}`}>
+                <span className="nav-icon">{icon}</span>
+                <span className="nav-label">{t(labelKey) || label}</span>
+              </Link>
+            ))}
+          </nav>
         )}
 
-        <nav className="navbar-links" ref={scrollRef}>
+        {/* Right actions */}
+        <div className="navbar-actions">
           {!user && (
             <>
-              <Link to="/login"    className={`nav-link ${pathname === '/login' ? 'active' : ''}`}>{t('nav.login')}</Link>
+              <Link to="/login"    className={`nav-link ${isActive('/login')    ? 'active' : ''}`}>{t('nav.login')}</Link>
               <Link to="/register" className="btn btn-primary nav-btn">{t('nav.getStarted')}</Link>
             </>
           )}
 
-          {user && NAV_LINKS.map(({ to, label, icon }) => (
+          {user && (
             <Link
-              key={to} to={to}
-              className={`nav-link ${pathname === to || pathname.startsWith(to + '/') ? 'active' : ''}`}
+              to={cartCount > 0 ? '/checkout' : '/orders'}
+              className="action-btn action-btn--cart"
+              title={cartCount > 0 ? 'Cart' : 'My Orders'}
             >
-              <span className="nav-icon">{icon}</span>
-              {label}
-            </Link>
-          ))}
-
-          {user?.role === 'admin' && (
-            <Link to="/admin" className={`nav-link ${pathname === '/admin' ? 'active' : ''}`}>
-              <span className="nav-icon">🛡️</span>{t('nav.admin')}
+              {cartCount > 0 ? '🛒' : '📦'}
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </Link>
           )}
-        </nav>
 
-        {user && (
-          <button className="nav-arrow" onClick={() => scrollNav(1)} aria-label="scroll next">
-            ›
-          </button>
-        )}
-      </div>
+          {user && (
+            <button
+              className={`action-btn action-btn--saved ${savedOpen ? 'active' : ''}`}
+              onClick={openSaved}
+              title="Saved items"
+            >
+              🔖
+              {savedCount > 0 && <span className="cart-badge saved-badge">{savedCount}</span>}
+            </button>
+          )}
 
-      {/* Fixed compact icon actions */}
-      <div className="navbar-actions">
-        {user && (
-          <Link
-            to={cartCount > 0 ? '/checkout' : '/orders'}
-            className="action-btn action-btn--cart"
-            title={cartCount > 0 ? (t('nav.cart') || 'Cart') : (t('nav.orders') || 'My Orders')}
-          >
-            {cartCount > 0 ? '🛒' : '📦'}
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-          </Link>
-        )}
-        <button className="action-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
-        <button className="action-btn" onClick={toggleLang} title={lang === 'ar' ? 'Switch to English' : 'التبديل للعربية'}>
-          🌐
-        </button>
-        {user && (
-          <button className="action-btn action-btn--logout" onClick={handleLogout} title={t('nav.signout')}>
-            🚪
+          <button className="action-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
+            {theme === 'dark' ? '☀️' : '🌙'}
           </button>
-        )}
-      </div>
-    </header>
+          <button className="action-btn" onClick={toggleLang} title="Toggle language">🌐</button>
+
+          {user && (
+            <button
+              className={`action-btn sidebar-toggle ${sidebarOpen ? 'active' : ''}`}
+              onClick={openSidebar}
+              title="More"
+              aria-label="Open sidebar"
+            >
+              <span className="hamburger-lines">
+                <span />
+                <span />
+                <span />
+              </span>
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* ── Sidebar Overlay ────────────────────────── */}
+      {user && (
+        <>
+          <div
+            className={`sidebar-backdrop ${(sidebarOpen || savedOpen) ? 'open' : ''}`}
+            onClick={() => { setSidebarOpen(false); setSavedOpen(false); }}
+          />
+
+          <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+            {/* Header */}
+            <div className="sidebar-header">
+              <div className="sidebar-user">
+                <div className="sidebar-avatar">
+                  {(user.name || user.email || '?')[0].toUpperCase()}
+                </div>
+                <div className="sidebar-user-info">
+                  <span className="sidebar-user-name">{user.name || 'User'}</span>
+                  <span className="sidebar-user-email">{user.email}</span>
+                </div>
+              </div>
+              <button className="sidebar-close" onClick={() => setSidebarOpen(false)}>✕</button>
+            </div>
+
+            {/* Links */}
+            <nav className="sidebar-nav">
+              <p className="sidebar-section-label">Features</p>
+              {SIDE_LINKS.map(({ to, icon, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className={`sidebar-link ${isActive(to) ? 'active' : ''}`}
+                >
+                  <span className="sidebar-link-icon">{icon}</span>
+                  <span>{label}</span>
+                  {isActive(to) && <span className="sidebar-active-dot" />}
+                </Link>
+              ))}
+
+              {user?.role === 'admin' && (
+                <>
+                  <p className="sidebar-section-label">Admin</p>
+                  <Link to="/admin" className={`sidebar-link sidebar-link--admin ${isActive('/admin') ? 'active' : ''}`}>
+                    <span className="sidebar-link-icon">🛡️</span>
+                    <span>Admin Dashboard</span>
+                  </Link>
+                </>
+              )}
+            </nav>
+
+            {/* Footer */}
+            <div className="sidebar-footer">
+              <button className="sidebar-logout" onClick={handleLogout}>
+                <span>🚪</span> Sign out
+              </button>
+            </div>
+          </aside>
+
+          {/* ── Saved Panel ──────────────────────── */}
+          <aside className={`sidebar saved-panel ${savedOpen ? 'open' : ''}`}>
+            <div className="sidebar-header">
+              <div className="sidebar-user">
+                <span style={{ fontSize: 20 }}>🔖</span>
+                <div className="sidebar-user-info">
+                  <span className="sidebar-user-name">Saved items</span>
+                  <span className="sidebar-user-email">{savedCount} item{savedCount !== 1 ? 's' : ''}</span>
+                </div>
+              </div>
+              <button className="sidebar-close" onClick={() => setSavedOpen(false)}>✕</button>
+            </div>
+
+            <div className="saved-list">
+              {savedCount === 0 ? (
+                <div className="saved-empty">
+                  <span>🔖</span>
+                  <p>No saved items yet</p>
+                  <p style={{ fontSize: '0.78rem' }}>Tap 🔖 on any product to save it</p>
+                </div>
+              ) : (
+                savedItems.map(item => (
+                  <div key={`${item.itemType}-${item.id}`} className="saved-item">
+                    <div className="saved-item-img">
+                      {item.image
+                        ? <img src={item.image} alt={item.name} onError={e => { e.currentTarget.style.display = 'none'; }} />
+                        : <span>{item.itemType === 'pet' ? '🐾' : '📦'}</span>
+                      }
+                    </div>
+                    <div className="saved-item-info">
+                      <span className="saved-item-name">{item.name}</span>
+                      <span className="saved-item-price">{item.price} EGP</span>
+                      <span className={`saved-item-type ${item.itemType}`}>
+                        {item.itemType === 'pet' ? '🐾 Pet Store' : '🛍️ Store'}
+                      </span>
+                    </div>
+                    <div className="saved-item-actions">
+                      <button
+                        className="saved-add-cart"
+                        title="Add to cart"
+                        onClick={() => {
+                          addToCart({ id: item.id, itemType: item.itemType, name: item.name, price: item.price, image: item.image });
+                        }}
+                      >🛒</button>
+                      <button
+                        className="saved-remove"
+                        title="Remove"
+                        onClick={() => removeSaved(item.id, item.itemType)}
+                      >✕</button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {savedCount > 0 && (
+              <div className="sidebar-footer">
+                <Link to="/checkout" className="saved-checkout-btn" onClick={() => { savedItems.forEach(i => addToCart(i)); setSavedOpen(false); }}>
+                  🛒 Add all to cart
+                </Link>
+              </div>
+            )}
+          </aside>
+        </>
+      )}
+    </>
   );
 }

@@ -318,3 +318,34 @@ export const adminService = {
         return await request('/admin/personality-results');
     },
 };
+
+// Emotion (FastAPI — port 8000)
+const EMOTION_URL = import.meta.env.VITE_EMOTION_URL || 'http://localhost:8000';
+
+export const emotionService = {
+    async predict(base64Image) {
+        const res = await fetch(`${EMOTION_URL}/predict`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image_base64: base64Image }),
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        return res.json();
+    },
+    async health() {
+        const res = await fetch(`${EMOTION_URL}/health`);
+        return res.json();
+    },
+};
+// WithUBot (Gemini-powered chatbot)
+export const withUBotService = {
+    async send(message, history = []) {
+        return await request('/withubot/chat', {
+            method: 'POST',
+            body: JSON.stringify({ message, history }),
+        });
+    },
+};

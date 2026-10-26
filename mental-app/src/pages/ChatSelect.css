@@ -1,0 +1,106 @@
+.cs-shell {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: var(--bg);
+}
+
+.cs-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.cs-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 12px;
+}
+
+.cs-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 0;
+    max-width: 440px;
+}
+
+.cs-cards {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cs-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    outline: none;
+}
+
+.cs-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+    border-color: var(--bot-color);
+}
+
+.cs-card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.cs-card-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--bot-color);
+    margin: 0;
+}
+
+.cs-card-tagline {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #a0aec0;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.cs-card-desc {
+    font-size: 0.88rem;
+    color: #b0bec5;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.cs-card-btn {
+    margin-top: 8px;
+    padding: 10px 24px;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
+}
+
+@media (max-width: 680px) {
+    .cs-title { font-size: 1.5rem; }
+    .cs-card  { width: 100%; max-width: 340px; padding: 28px 24px; }
+}
