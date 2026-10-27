@@ -302,10 +302,11 @@ const storeItems = [
 
 const seed = async () => {
     try {
+        if (process.env.NODE_ENV === 'production' || process.env.ALLOW_LEGACY_SEED !== 'true')
+            throw new Error('Legacy catalog seed is disabled. Use npm run seed:demo for a separate demo database.');
         await connectDB();
-        await Article.deleteMany();
-        await Pet.deleteMany();
-        await StoreItem.deleteMany({ sellerName: "Mindful Store" });
+        if (await Article.exists({}) || await Pet.exists({}) || await StoreItem.exists({}))
+            throw new Error('Refusing to seed a non-empty catalog. Existing data is preserved.');
         await Article.insertMany(articles);
         await Pet.insertMany(pets);
         await StoreItem.insertMany(storeItems);

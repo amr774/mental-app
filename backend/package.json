@@ -9,7 +9,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "seed:demo": "node scripts/seed-demo.js",
+    "test": "node --test test/*.test.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

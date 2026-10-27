@@ -11,7 +11,7 @@ const petEmoji = (type = '') => TYPE_EMOJI[type?.toLowerCase()] || '🐾';
 // ── LocalStorage helpers ────────────────────────────────────────────
 const CHATS_KEY  = (user) => `mh_chats_v2_${user?.id || user?.email || 'guest'}`;
 const loadChats  = (user) => { try { return JSON.parse(localStorage.getItem(CHATS_KEY(user))) || []; } catch { return []; } };
-const saveChats  = (user, chats) => { try { localStorage.setItem(CHATS_KEY(user), JSON.stringify(chats)); } catch {} };
+const saveChats  = (user, chats) => { try { localStorage.setItem(CHATS_KEY(user), JSON.stringify(chats)); } catch { /* Storage may be unavailable; keep the in-memory state. */ } };
 
 const makeChat = (title = '') => ({
     id:        Date.now(),

@@ -44,6 +44,8 @@ class AuthService {
     }
 
     async forgotPassword(email) {
+        if (process.env.NODE_ENV === 'production')
+            throw { status: 503, message: 'Password recovery is not configured. Contact the site operator.' };
         const user = await userRepository.findByEmail(email);
         if (!user) return { message: "If this email exists, a reset token has been sent." };
 

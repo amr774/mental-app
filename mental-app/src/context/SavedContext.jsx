@@ -4,7 +4,7 @@ const SavedContext = createContext(null);
 
 const KEY = 'mh_saved_v2';
 const load    = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
-const persist = (items) => { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch {} };
+const persist = (items) => { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch { /* Storage may be unavailable; keep the in-memory state. */ } };
 
 export function SavedProvider({ children }) {
   const [items, setItems] = useState(load);

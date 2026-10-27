@@ -1,13 +1,16 @@
 const multer = require("multer");
 const path   = require("path");
 const crypto = require("crypto");
+const fs = require('node:fs');
+const avatarDirectory = path.join(require('../config/uploads'), 'avatars');
+fs.mkdirSync(avatarDirectory, { recursive: true });
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, "../../uploads/avatars"));
+        cb(null, avatarDirectory);
     },
     filename: (req, file, cb) => {
-        const ext    = path.extname(file.originalname).toLowerCase();
+        const ext = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp', 'image/gif': '.gif' }[file.mimetype];
         const unique = crypto.randomBytes(16).toString("hex");
         cb(null, `${req.user.id}_${unique}${ext}`);
     },

@@ -1,22 +1,24 @@
 const BASE_URL = import.meta.env.VITE_API_URL || '';
 
 function getToken() {
-    const user = JSON.parse(localStorage.getItem('mh_user') || '{}');
-    return user.token || '';
+    try {
+        const user = JSON.parse(localStorage.getItem('mh_user') || '{}');
+        return user?.token || '';
+    } catch { return ''; }
 }
 
 async function request(path, options = {}) {
     const res = await fetch(`${BASE_URL}${path}`, {
+        ...options,
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${getToken()}`,
             ...options.headers
         },
-        ...options,
     });
 
     // Token expired or invalid → dispatch event so AuthContext handles logout
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 401) {
         localStorage.removeItem('mh_user');
         window.dispatchEvent(new Event('auth:expired'));
         throw new Error('Session expired. Please log in again.');
@@ -319,25 +321,17 @@ export const adminService = {
     },
 };
 
-// Emotion (FastAPI — port 8000)
-const EMOTION_URL = import.meta.env.VITE_EMOTION_URL || 'http://localhost:8000';
-
+// Use the authenticated backend proxy; never contact a visitor's localhost.
 export const emotionService = {
     async predict(base64Image) {
-        const res = await fetch(`${EMOTION_URL}/predict`, {
+        return request('/emotion/predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image_base64: base64Image }),
         });
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.detail || `HTTP ${res.status}`);
-        }
-        return res.json();
     },
     async health() {
-        const res = await fetch(`${EMOTION_URL}/health`);
-        return res.json();
+        return request('/emotion/health');
     },
 };
 // WithUBot (Gemini-powered chatbot)

@@ -70,7 +70,7 @@ export default function Navbar() {
         {user && (
           <nav className="navbar-main-links">
             {MAIN_LINKS.map(({ to, icon, labelKey, label }) => (
-              <Link key={to} to={to} className={`nav-link ${isActive(to) ? 'active' : ''}`}>
+              <Link key={to} to={to} aria-label={t(labelKey) || label} className={`nav-link ${isActive(to) ? 'active' : ''}`}>
                 <span className="nav-icon">{icon}</span>
                 <span className="nav-label">{t(labelKey) || label}</span>
               </Link>
@@ -164,7 +164,7 @@ export default function Navbar() {
                   className={`sidebar-link ${isActive(to) ? 'active' : ''}`}
                 >
                   <span className="sidebar-link-icon">{icon}</span>
-                  <span>{label}</span>
+                  <span>{lang === 'ar' ? {"Articles":"المقالات","Mood":"المزاج","Journal":"اليوميات","Goals":"الأهداف","Breathe":"التنفس","Community":"المجتمع","Pet Store":"الحيوانات الأليفة","Emotion Scan":"فحص المشاعر","WithUBot":"رفيق المحادثة"}[label] || label : label}</span>
                   {isActive(to) && <span className="sidebar-active-dot" />}
                 </Link>
               ))}
@@ -183,7 +183,7 @@ export default function Navbar() {
             {/* Footer */}
             <div className="sidebar-footer">
               <button className="sidebar-logout" onClick={handleLogout}>
-                <span>🚪</span> Sign out
+                <span>🚪</span> {t('nav.logout')}
               </button>
             </div>
           </aside>

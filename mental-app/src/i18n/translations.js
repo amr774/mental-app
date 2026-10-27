@@ -828,14 +828,8 @@ export const translations = {
     'pets.sold':          'Sold',
     'pets.priceFree':     'Free',
     'pets.contactSeller': 'Contact to Buy',
-    'pets.adopt':       '🏠 Adopt',
-    'pets.adopted':     '✓ Adopted',
-    'pets.adoptedNow':  'Adopted!',
 
     // ─── Articles extra ──────────────────────
-    'articles.results': 'articles found',
-    'articles.prev':    'Previous',
-    'articles.next':    'Next',
 
     // ─── Admin charts ──────────────────────
     'admin.charts':            'Charts',
