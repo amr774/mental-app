@@ -21,7 +21,7 @@ export default function Journal() {
   useEffect(() => {
     journalService.getAll()
       .then(setEntries)
-      .catch(() => {})
+      .catch(error => setError(error.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -44,7 +44,7 @@ export default function Journal() {
     try {
       await journalService.delete(id);
       setEntries(prev => prev.filter(e => (e._id || e.id) !== id));
-    } catch {}
+    } catch (error) { setError(error.message); }
   };
 
   return (
@@ -67,8 +67,8 @@ export default function Journal() {
       {writing && (
         <div className="card journal-form animate-fade-up">
           <div className="input-group">
-            <label className="input-label">{t('journal.title')}</label>
-            <input className="input" placeholder={t('journal.titlePlaceholder')}
+            <label className="input-label" htmlFor="journal-title">{t('journal.title')}</label>
+            <input id="journal-title" className="input" placeholder={t('journal.titlePlaceholder')}
               value={title} onChange={e => setTitle(e.target.value)} />
           </div>
 
@@ -89,8 +89,9 @@ export default function Journal() {
           </div>
 
           <div className="input-group">
-            <label className="input-label">{t('journal.content')} *</label>
+            <label className="input-label" htmlFor="journal-content">{t('journal.content')} *</label>
             <textarea
+              id="journal-content"
               className="input journal-textarea"
               rows={6}
               placeholder={t('journal.contentPlaceholder')}
@@ -99,7 +100,6 @@ export default function Journal() {
             />
           </div>
 
-          {error && <p style={{ color: '#f87171', fontSize: 13 }}>{error}</p>}
 
           <button
             className="btn btn-primary"
@@ -111,6 +111,7 @@ export default function Journal() {
         </div>
       )}
 
+      {error && <p role="alert" style={{ color: '#f87171', fontSize: 13 }}>{error}</p>}
       {loading ? (
         <p style={{ color: 'var(--text-3)', padding: '40px 0', textAlign: 'center' }}>{t('journal.loading')}</p>
       ) : entries.length === 0 ? (

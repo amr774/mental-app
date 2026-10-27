@@ -6,7 +6,7 @@ import './WithUBot.css';
 // ── LocalStorage helpers ──────────────────────────────────────────
 const KEY    = (user) => `wu_chats_v1_${user?.id || user?.email || 'guest'}`;
 const load   = (user) => { try { return JSON.parse(localStorage.getItem(KEY(user))) || []; } catch { return []; } };
-const save   = (user, chats) => { try { localStorage.setItem(KEY(user), JSON.stringify(chats)); } catch {} };
+const save   = (user, chats) => { try { localStorage.setItem(KEY(user), JSON.stringify(chats)); } catch { /* Storage may be unavailable; keep the in-memory state. */ } };
 const mkChat = (title = 'New Chat') => ({ id: Date.now(), title, messages: [], createdAt: Date.now() });
 
 function groupByDate(chats) {

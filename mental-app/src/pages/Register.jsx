@@ -40,18 +40,18 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
-            <label className="input-label">{t('auth.fullName')}</label>
-            <input className="input" type="text" placeholder="Amr Khaled"
+            <label className="input-label" htmlFor="register-name">{t('auth.fullName')}</label>
+            <input id="register-name" autoComplete="name" className="input" type="text" placeholder="Your name"
               value={name} onChange={e => setName(e.target.value)} required />
           </div>
           <div className="input-group">
-            <label className="input-label">{t('auth.email')}</label>
-            <input className="input" type="email" placeholder="you@example.com"
+            <label className="input-label" htmlFor="register-email">{t('auth.email')}</label>
+            <input id="register-email" className="input" type="email" placeholder="you@example.com"
               value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" />
           </div>
           <div className="input-group">
-            <label className="input-label">{t('auth.password')}</label>
-            <input className="input" type="password" placeholder={t('auth.minPassword')}
+            <label className="input-label" htmlFor="register-password">{t('auth.password')}</label>
+            <input id="register-password" className="input" type="password" placeholder={t('auth.minPassword')}
               value={password} onChange={e => setPassword(e.target.value)} required autoComplete="new-password" />
           </div>
 

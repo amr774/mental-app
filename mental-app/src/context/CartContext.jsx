@@ -4,7 +4,7 @@ const CartContext = createContext(null);
 
 const CART_KEY = 'mh_cart';
 const load = () => { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } };
-const save = (items) => { try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch {} };
+const save = (items) => { try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch { /* Storage may be unavailable; keep the in-memory state. */ } };
 
 export function CartProvider({ children }) {
     const [items, setItems] = useState(load);

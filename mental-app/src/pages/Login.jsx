@@ -44,13 +44,13 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
-            <label className="input-label">{t('auth.email')}</label>
-            <input className="input" type="email" placeholder="you@example.com"
+            <label className="input-label" htmlFor="login-email">{t('auth.email')}</label>
+            <input id="login-email" className="input" type="email" placeholder="you@example.com"
               value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" />
           </div>
           <div className="input-group">
-            <label className="input-label">{t('auth.password')}</label>
-            <input className="input" type="password" placeholder="••••••••"
+            <label className="input-label" htmlFor="login-password">{t('auth.password')}</label>
+            <input id="login-password" className="input" type="password" placeholder="••••••••"
               value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password" />
           </div>
 
